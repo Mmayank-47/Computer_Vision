@@ -15,7 +15,7 @@ options = HandLandmarkerOptions(
     num_hands = 1
 )
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 canvas = None
 prev_x, prev_y = 0, 0
@@ -47,6 +47,15 @@ with HandLandmarker.create_from_options(options) as landmarker:
             hand = result.hand_landmarks[0]
             index_tip = hand[8]
             index_base = hand[6]
+            middle_tip = hand[12]
+            middle_base = hand[10]
+            ring_tip = hand[16]
+            ring_base = hand[14]
+            little_tip = hand[20]
+            little_base = hand[18]
+            thumb_tip = hand[4]
+            thumb_base = hand[2]
+
             x = int(index_tip.x * w)
             y = int(index_tip.y * h)
             base_y = int(index_base.y * h)
@@ -56,35 +65,11 @@ with HandLandmarker.create_from_options(options) as landmarker:
                     prev_x, prev_y = x, y
                 cv2.line(canvas, (prev_x, prev_y), (x, y), color, 5)
                 prev_x, prev_y = x, y
+                if middle_tip.y < middle_base.y and index_tip.y < index_base.y:
+                    cv2.circle(canvas, (x,y), 30, (0,0,0), -1)
+                    prev_x, prev_y = 0, 0
             else:
                 prev_x, prev_y = 0, 0
-
-            middle_tip = hand[12]
-            middle_base = hand[10]
-
-            ring_tip = hand[16]
-            ring_base = hand[14]
-
-            little_tip = hand[20]
-            little_base = hand[18]
-
-            thumb_tip = hand[4]
-            thumb_base = hand[2]
-
-            if middle_tip.y < middle_base.y and index_tip.y < index_base.y : #only middle and index are up
-                color = (255,0,0)
-            if middle_tip.y < middle_base.y and ring_base.y < ring_base.y and little_tip.y < little_base.y: #only middle and index are up
-                color = (0,255,0)
-            if thumb_tip.x > ring_base.x:
-                color = (0,0,255)
-            if middle_tip.y < middle_base.y and ring_base.y < ring_base.y and little_tip.y < little_base.y and index_tip.y < index_base.y:
-                color = (255,255,255)
-
-
-
-
-
-
 
         frame =  cv2.add(frame, canvas)
         cv.imshow('Air Writing', frame)

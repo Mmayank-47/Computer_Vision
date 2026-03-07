@@ -15,7 +15,7 @@ options = HandLandmarkerOptions(
     num_hands = 1
 )
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 canvas = None
 prev_x, prev_y = 0, 0
@@ -59,6 +59,10 @@ with HandLandmarker.create_from_options(options) as landmarker:
             x = int(index_tip.x * w)
             y = int(index_tip.y * h)
             base_y = int(index_base.y * h)
+            cv2.rectangle(canvas,(0,0),(70,50),(255,0,0),-1)
+            cv2.rectangle(canvas,(70,0),(140,50),(0,255,0),-1)
+            cv2.rectangle(canvas, (140, 0), (210, 50), (0, 0 ,255), -1)
+            cv2.rectangle(canvas, (210, 0), (280, 50), (255,255,255), -1)
 
             if y < base_y:
                 if prev_x == 0 and prev_y == 0:
@@ -68,6 +72,16 @@ with HandLandmarker.create_from_options(options) as landmarker:
                 if middle_tip.y < middle_base.y and index_tip.y < index_base.y:
                     cv2.circle(canvas, (x,y), 30, (0,0,0), -1)
                     prev_x, prev_y = 0, 0
+                if y in range(0,50) :
+                    if x in range(0,70):
+                        color = (255,0,0)
+                    if x in range(70,140):
+                        color = (0,255,0)
+                    if x in range(140,210):
+                        color = (0,0,255)
+                    if x in range(210, 280):
+                        color = (255,255,255)
+
             else:
                 prev_x, prev_y = 0, 0
 
